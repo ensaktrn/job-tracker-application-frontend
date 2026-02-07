@@ -19,7 +19,7 @@ export function Topbar() {
     <header className="h-16 border-b bg-background px-6 flex items-center justify-between">
       <div>
         <div className="text-sm text-muted-foreground">JobTracker</div>
-        <div className="text-lg font-semibold leading-tight">{title}</div>
+        <div className="text-lg font-semibold leading-tight text-primary">{title}</div>
       </div>
 
       <div className="flex items-center gap-3">
