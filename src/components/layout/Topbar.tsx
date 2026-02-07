@@ -1,32 +1,56 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/api/auth";
-import { usePathname } from "next/navigation";
 
-function titleFromPath(path: string) {
-  if (path.startsWith("/companies")) return "Companies";
-  if (path.startsWith("/job-postings")) return "Job Postings";
-  if (path.startsWith("/applications")) return "My Applications";
-  return "Dashboard";
+const links = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/companies", label: "Companies" },
+  { href: "/job-postings", label: "Job Postings" },
+  { href: "/applications", label: "My Applications" },
+];
+
+function isActive(pathname: string, href: string) {
+  if (href === "/dashboard") return pathname === "/dashboard";
+  return pathname.startsWith(href);
 }
 
 export function Topbar() {
   const pathname = usePathname();
-  const title = titleFromPath(pathname);
 
   return (
     <header className="h-16 border-b bg-background px-6 flex items-center justify-between">
-      <div>
-        <div className="text-sm text-muted-foreground">JobTracker</div>
-        <div className="text-lg font-semibold leading-tight text-primary">{title}</div>
+      <div className="flex items-center gap-8">
+        <div className="text-lg font-semibold tracking-tight text-primary">
+          JobTracker
+        </div>
+
+        <nav className="hidden md:flex items-center gap-2">
+          {links.map((l) => {
+            const active = isActive(pathname, l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={[
+                  "rounded-md px-3 py-2 text-sm transition",
+                  active
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                ].join(" ")}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
 
-      <div className="flex items-center gap-3">
-        <Button variant="outline" size="sm" onClick={() => logout()}>
-          Logout
-        </Button>
-      </div>
+      <Button variant="outline" size="sm" onClick={() => logout()}>
+        Logout
+      </Button>
     </header>
   );
 }
