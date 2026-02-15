@@ -46,17 +46,17 @@ export default function ApplicationsPage() {
       : (query.data ?? []).filter((a) => a.status === filterStatus);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-gradient-to-r from-primary/[0.07] via-background to-cyan-100/30 p-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <div className="text-sm text-muted-foreground">Private</div>
-          <div className="text-2xl font-semibold tracking-tight">
+          <div className="text-sm font-medium text-primary">Private</div>
+          <div className="text-2xl font-semibold tracking-tight md:text-3xl">
             My Applications
           </div>
         </div>
 
         <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-full bg-background/90 sm:w-56">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
@@ -70,7 +70,7 @@ export default function ApplicationsPage() {
       </div>
 
       {applications.length === 0 && (
-        <Card>
+        <Card className="border-dashed">
           <CardHeader>
             <CardTitle className="text-base">No applications yet</CardTitle>
           </CardHeader>
@@ -81,12 +81,9 @@ export default function ApplicationsPage() {
       )}
 
       {applications.length > 0 && (
-        <div
-          className="grid gap-6 w-full"
-          style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}
-        >
+        <div className="grid w-full gap-4 md:grid-cols-2 xl:grid-cols-3">
           {applications.map((a) => (
-            <Card key={a.id} className="w-full">
+            <Card key={a.id} className="w-full border-border/80 bg-card/95 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">
                   {a.jobTitle}
@@ -97,7 +94,7 @@ export default function ApplicationsPage() {
               </CardHeader>
 
               <CardContent className="space-y-3">
-                <Badge variant={statusVariant(a.status)}>
+                <Badge className="rounded-full" variant={statusVariant(a.status)}>
                   {a.status}
                 </Badge>
 

@@ -19,9 +19,11 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-72 border-r bg-background">
-      <div className="p-5 border-b">
-        <div className="text-xl font-semibold tracking-tight">JobTracker</div>
+    <aside className="w-72 border-r border-sidebar-border bg-sidebar/80 backdrop-blur-sm">
+      <div className="p-5 border-b border-sidebar-border">
+        <div className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+          JobTracker
+        </div>
         <div className="text-sm text-muted-foreground mt-1">
           Shared catalog + private applications
         </div>
@@ -40,13 +42,13 @@ export function Sidebar() {
                 key={l.href}
                 href={l.href}
                 className={[
-                  "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition",
+                  "flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm transition",
                   active
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                    : "text-muted-foreground hover:bg-muted/80 hover:text-foreground",
                 ].join(" ")}
               >
-                <span className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+                <span className={["h-2 w-2 rounded-full", active ? "bg-primary-foreground/90" : "bg-muted-foreground/40"].join(" ")} />
                 {l.label}
               </Link>
             );

@@ -28,6 +28,10 @@ function safeHost(url?: string | null) {
   }
 }
 
+function usernameFromEmail(email: string) {
+  return email.split("@")[0] || email;
+}
+
 export default function JobPostingsPage() {
   const [q, setQ] = useState("");
   const qc = useQueryClient();
@@ -73,19 +77,19 @@ export default function JobPostingsPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-gradient-to-r from-primary/[0.07] via-background to-cyan-100/30 p-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <div className="text-sm text-muted-foreground">Shared catalog</div>
-          <div className="text-2xl font-semibold tracking-tight">Job Postings</div>
+          <div className="text-sm font-medium text-primary">Shared catalog</div>
+          <div className="text-2xl font-semibold tracking-tight md:text-3xl">Job Postings</div>
         </div>
 
-        <div className="flex gap-2 md:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row md:items-center">
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search title, company, creator..."
-            className="md:w-80"
+            className="sm:w-80 bg-background/90"
           />
           <AddJobPostingDialog />
         </div>
@@ -95,7 +99,7 @@ export default function JobPostingsPage() {
       {postingsQuery.isError && <div className="text-sm text-red-600">Failed to load job postings.</div>}
 
       {!postingsQuery.isLoading && !postingsQuery.isError && filtered.length === 0 && (
-        <Card>
+        <Card className="border-dashed">
           <CardHeader>
             <CardTitle className="text-base">No results</CardTitle>
           </CardHeader>
@@ -106,16 +110,13 @@ export default function JobPostingsPage() {
       )}
 
       {!postingsQuery.isLoading && !postingsQuery.isError && filtered.length > 0 && (
-        <div
-          className="grid gap-6 w-full"
-          style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}
-        >
+        <div className="grid w-full gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.map((p: JobPostingDto) => {
             const companyName = companyNameById.get(p.companyId) ?? p.companyId;
             const host = safeHost(p.url);
 
             return (
-              <Card key={p.id} className="w-full hover:shadow-sm transition">
+              <Card key={p.id} className="w-full border-border/80 bg-card/95 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
@@ -126,14 +127,14 @@ export default function JobPostingsPage() {
                         {companyName}
                       </div>
                     </div>
-                    <Badge variant="secondary">Shared</Badge>
+                    <Badge variant="secondary" className="rounded-full">Shared</Badge>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-3">
                   <div className="text-sm">
                     <Link
-                      className="text-primary underline underline-offset-4"
+                      className="font-medium text-primary underline underline-offset-4"
                       href={p.url}
                       target="_blank"
                     >
@@ -150,7 +151,7 @@ export default function JobPostingsPage() {
                   )}
 
                   <div className="text-xs text-muted-foreground">
-                    Added by <span className="text-foreground">{p.createdByEmail}</span>
+                    Added by <span className="text-foreground">{usernameFromEmail(p.createdByEmail)}</span>
                   </div>
 
                   <div className="flex items-center justify-between pt-2">
@@ -160,6 +161,7 @@ export default function JobPostingsPage() {
 
                     <Button
                       size="sm"
+                      className="rounded-full"
                       onClick={() => applyMutation.mutate(p.id)}
                       disabled={applyMutation.isPending}
                     >

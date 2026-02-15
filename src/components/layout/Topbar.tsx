@@ -21,9 +21,9 @@ export function Topbar() {
   const pathname = usePathname();
 
   return (
-    <header className="h-16 border-b bg-background px-6 flex items-center justify-between">
+    <header className="sticky top-0 z-20 h-16 border-b border-border/70 bg-background/85 px-4 backdrop-blur-md md:px-8 flex items-center justify-between">
       <div className="flex items-center gap-8">
-        <div className="text-lg font-semibold tracking-tight text-primary">
+        <div className="text-lg font-bold tracking-tight bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
           JobTracker
         </div>
 
@@ -35,10 +35,10 @@ export function Topbar() {
                 key={l.href}
                 href={l.href}
                 className={[
-                  "rounded-md px-3 py-2 text-sm transition",
+                  "rounded-full px-3.5 py-1.5 text-sm transition",
                   active
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/80",
                 ].join(" ")}
               >
                 {l.label}
@@ -48,7 +48,7 @@ export function Topbar() {
         </nav>
       </div>
 
-      <Button variant="outline" size="sm" onClick={() => logout()}>
+      <Button variant="outline" size="sm" className="rounded-full border-border/70 bg-background/80" onClick={() => logout()}>
         Logout
       </Button>
     </header>

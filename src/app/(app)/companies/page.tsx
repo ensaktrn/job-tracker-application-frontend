@@ -24,6 +24,10 @@ function safeHost(url?: string | null) {
   }
 }
 
+function usernameFromEmail(email: string) {
+  return email.split("@")[0] || email;
+}
+
 export default function CompaniesPage() {
   const [q, setQ] = useState("");
 
@@ -46,31 +50,29 @@ export default function CompaniesPage() {
   }, [data, q]);
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-gradient-to-r from-primary/[0.07] via-background to-cyan-100/30 p-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <div className="text-sm text-muted-foreground">Shared catalog</div>
-          <div className="text-2xl font-semibold tracking-tight">Companies</div>
+          <div className="text-sm font-medium text-primary">Shared catalog</div>
+          <div className="text-2xl font-semibold tracking-tight md:text-3xl">Companies</div>
         </div>
 
-        <div className="flex gap-2 md:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row md:items-center">
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search companies..."
-            className="md:w-80"
+            className="sm:w-80 bg-background/90"
           />
           <AddCompanyDialog />
         </div>
       </div>
 
-      {/* Body */}
       {isLoading && <div className="text-sm text-muted-foreground">Loading...</div>}
       {isError && <div className="text-sm text-red-600">Failed to load companies.</div>}
 
       {!isLoading && !isError && filtered.length === 0 && (
-        <Card>
+        <Card className="border-dashed">
           <CardHeader>
             <CardTitle className="text-base">No results</CardTitle>
           </CardHeader>
@@ -81,12 +83,7 @@ export default function CompaniesPage() {
       )}
 
       {!isLoading && !isError && filtered.length > 0 && (
-       <div
-            className="grid gap-6 w-full"
-            style={{
-                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-            }}
-            >
+        <div className="grid w-full gap-4 md:grid-cols-2 xl:grid-cols-3">
 
           {filtered.map((c: CompanyDto) => {
             const host = safeHost(c.website);
@@ -94,12 +91,12 @@ export default function CompaniesPage() {
             return (
               <Card
                 key={c.id}
-                className="group hover:shadow-sm transition-shadow border-l-4 border-l-primary/30 hover:border-l-primary"
+                className="group border-border/80 bg-card/95 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="text-base leading-tight">{c.name}</CardTitle>
-                    <Badge variant="secondary">Shared</Badge>
+                    <Badge variant="secondary" className="rounded-full">Shared</Badge>
                   </div>
                 </CardHeader>
 
@@ -108,7 +105,7 @@ export default function CompaniesPage() {
                     {c.website ? (
                       host ? (
                         <Link
-                          className="text-primary underline underline-offset-4"
+                          className="font-medium text-primary underline underline-offset-4"
                           href={c.website}
                           target="_blank"
                         >
@@ -123,7 +120,7 @@ export default function CompaniesPage() {
                   </div>
 
                   <div className="text-xs text-muted-foreground">
-                    Added by <span className="text-foreground">{c.createdByEmail}</span>
+                    Added by <span className="text-foreground">{usernameFromEmail(c.createdByEmail)}</span>
                   </div>
 
                   <div className="text-xs text-muted-foreground">
