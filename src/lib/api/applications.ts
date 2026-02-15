@@ -18,11 +18,28 @@ export type JobApplicationDto = {
   companyName: string;
 };
 
-export async function getMyApplications(): Promise<JobApplicationDto[]> {
-  const res = await api.get<JobApplicationDto[]>("/api/applications");
-  return res.data;
+export type PagedResult<T> = {
+  items: T[];
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  totalPages?: number;
+};
+
+function isPagedResult<T>(data: any): data is PagedResult<T> {
+  return data && typeof data === "object" && Array.isArray(data.items);
 }
 
+export async function getMyApplications(): Promise<JobApplicationDto[]> {
+  const res = await api.get("/api/applications");
+
+  // Backend bazen direkt array döner, bazen { items: [] } döner.
+  if (isPagedResult<JobApplicationDto>(res.data)) {
+    return res.data.items;
+  }
+
+  return res.data as JobApplicationDto[];
+}
 export async function applyToJob(jobPostingId: string): Promise<void> {
   await api.post("/api/applications", { jobPostingId });
 }
